@@ -2,16 +2,17 @@
 
 #variables
 echo "Provision VM START"
-echo "=========================================="
+echo "==========================================\n\n\n\n"
 
 sudo apt-get update
 
 
-echo ">>>>>> install ImageMagick"
+echo "\n\n>>>>>> install ImageMagick\n\n"
 sudo apt-get install -y ImageMagick
 
 
-echo ">>>>>> build and install mozjpeg for lossy compression"
+#http://blarg.co.uk/blog/how-to-install-mozjpeg
+echo "\n\n>>>>>> build and install mozjpeg for lossy compression\n\n"
 sudo apt-get install -y autoconf automake libtool nasm gcc
 #for TurboJPEG Java wrapper
 #sudo apt-get install -y openjdk-7-jdk
@@ -22,10 +23,11 @@ tar -xzf mozjpeg-3.1-release-source.tar.gz
 rm mozjpeg-3.1-release-source.tar.gz
 cd mozjpeg
 ./configure
-sudo make install prefix=/usr/local libdir=/usr/local/lib64
+#http://blarg.co.uk/blog/how-to-install-mozjpeg
+# sudo make install prefix=/usr/local libdir=/usr/local/lib64
+#sudo ln -s /opt/libmozjpeg/bin/jpegtran /usr/local/bin/mozjpeg
 
-
-echo ">>>>>> build and install imgmin for lossy compression"
+echo "\n\n>>>>>> build and install imgmin for lossy compression\n\n"
 sudo apt-get install -y autoconf imagemagick libgraphicsmagick1-dev libmagickwand-dev perlmagick apache2-prefork-dev pngnq pngcrush pngquant
 sudo apt-get update
 cd /home/vagrant
@@ -47,36 +49,45 @@ sudo make install
 #compare -compose src rose.jpg reconstruct.jpg difference.png
 
 
-echo ">>>>>> build and install jpegoptim for lossless compression"
+echo "\n\n>>>>>> build and install jpegoptim for lossless compression\n\n"
 sudo apt-get install -y libjpeg62
 sudo apt-get update
 cd /home/vagrant
 # wget https://github.com/tjko/jpegoptim/archive/RELEASE.1.4.3.tar.gz
 wget https://github.com/tjko/jpegoptim/archive/master.tar.gz
-tar -xzf RELEASE.1.4.3.tar.gz
-rm RELEASE.1.4.3.tar.gz
-cd jpegoptim-RELEASE.1.4.3
+tar -xzf master.tar.gz
+rm master.tar.gz
+cd jpegoptim-master 
 ./configure
 make
 make strip
 sudo make install
 # apt-get install jpegoptim
+
+#https://www.yireo.com/blog/1559-jpegoptim-wrong-jpeg-library-version
+#http://webhostingneeds.com/wrong_jpeg_library_version:_library_is_62,_caller_expects_80
 # sudo ln -sv /usr/lib/x86_64-linux-gnu/libjpeg.so.62.0.0 /usr/lib/x86_64-linux-gnu/libjpeg.so.6
 # ln -s /usr/bin/bar /opt/foo
 
 
 #install dssim (PNG only)
-echo ">>>>>> install DSSIM for measurement"
+echo "\n\n>>>>>> install DSSIM for measurement\n\n"
 sudo apt-add-repository -y ppa:lkwg82/dssim
 sudo apt-get update
 sudo apt-get install dssim
 
+# https://pornel.net/dssim
+# dssim file.png file-modified.png
+# Will output something like 0.2341. 0 means exactly the same image, >0 (unbounded) is amount of difference.
+
+# dssim -o totally-rad-visualisation.png file.png file-modified.png
+
 #depends on jpegoptim, dssim & mozjpeg to be installed
-echo ">>>>>> install cjpeg-dssim for measurement & optimization"
+echo "\n\n>>>>>> install cjpeg-dssim for measurement & optimization\n\n"
 mkdir -p ~/bin
 wget https://raw.githubusercontent.com/technopagan/cjpeg-dssim/master/cjpeg-dssim -P ~/bin
 chmod +x ~/bin/cjpeg-dssim
 source ~/.profile
 
 
-echo ">>>>>> ALL DONE"
+echo "\n\n\n\n>>>>>> ALL DONE\n\n"

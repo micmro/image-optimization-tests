@@ -2,3 +2,5 @@
 .*
 # except for .gitignore
 !.gitignore
+
+optim-test-

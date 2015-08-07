@@ -3,19 +3,4 @@
 # except for .gitignore
 !.gitignore
 
-db
-eclipse
-lib
-log
-logs
-modules
-precompiled
-project/project
-project/target
-target
-tmp
-test-result
-server.pid
-*.iml
-*.eml
-*.sublime-workspace
+optim-test-*
