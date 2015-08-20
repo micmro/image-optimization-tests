@@ -2,17 +2,18 @@
 
 #variables
 echo "Provision VM START"
-echo "==========================================\n\n\n\n"
+echo "=========================================="
+echo ""
 
 sudo apt-get update
 
 
-echo "\n\n>>>>>> install ImageMagick\n\n"
+echo ">>>>>> install ImageMagick"
 sudo apt-get install -y ImageMagick
 
 
 #http://blarg.co.uk/blog/how-to-install-mozjpeg
-echo "\n\n>>>>>> build and install mozjpeg for lossy compression\n\n"
+echo ">>>>>> build and install mozjpeg for lossy compression"
 sudo apt-get install -y autoconf automake libtool nasm gcc
 #for TurboJPEG Java wrapper
 #sudo apt-get install -y openjdk-7-jdk
@@ -25,17 +26,23 @@ cd mozjpeg
 ./configure
 #http://blarg.co.uk/blog/how-to-install-mozjpeg
 # sudo make install prefix=/usr/local libdir=/usr/local/lib64
-#sudo ln -s /opt/libmozjpeg/bin/jpegtran /usr/local/bin/mozjpeg
+sudo make install
+#install as mozjpeg
+# sudo ln -s /opt/mozjpeg/bin/ /usr/local/bin/mozjpeg
+# sudo unlink /usr/local/bin/mozjpeg
+sudo ln -s /opt/mozjpeg/bin/cjpeg /usr/local/bin/mozcjpeg
+sudo ln -s /opt/mozjpeg/bin/jpegtran /usr/local/bin/mozjpegtran
 
-echo "\n\n>>>>>> build and install imgmin for lossy compression\n\n"
+
+echo ">>>>>> build and install imgmin for lossy compression"
 sudo apt-get install -y autoconf imagemagick libgraphicsmagick1-dev libmagickwand-dev perlmagick apache2-prefork-dev pngnq pngcrush pngquant
 sudo apt-get update
 cd /home/vagrant
 # wget https://github.com/rflynn/imgmin/archive/v1.1.tar.gz
-wget https://github.com/micmro/imgmin/archive/d7969f32ee06eb4b717c92d8c43d5a5f2eab4de9.tar.gz -O imgmin_micmro.tar.gz
-tar -xzf imgmin_micmro.tar.gz
-rm imgmin_micmro.tar.gz
-cd imgmin-d7969f32ee06eb4b717c92d8c43d5a5f2eab4de9
+wget https://github.com/rflynn/imgmin/archive/ea2b77c654421f7ae0da8e537829b16b810e8941.tar.gz -O imgmin.tar.gz
+tar -xzf imgmin.tar.gz
+rm imgmin.tar.gz
+cd imgmin-ea2b77c654421f7ae0da8e537829b16b810e8941
 autoreconf -fi
 ./configure
 make
@@ -49,7 +56,7 @@ sudo make install
 #compare -compose src rose.jpg reconstruct.jpg difference.png
 
 
-echo "\n\n>>>>>> build and install jpegoptim for lossless compression\n\n"
+echo ">>>>>> build and install jpegoptim for lossless compression"
 sudo apt-get install -y libjpeg62
 sudo apt-get update
 cd /home/vagrant
@@ -71,23 +78,34 @@ sudo make install
 
 
 #install dssim (PNG only)
-echo "\n\n>>>>>> install DSSIM for measurement\n\n"
-sudo apt-add-repository -y ppa:lkwg82/dssim
-sudo apt-get update
-sudo apt-get install dssim
+echo ">>>>>> install DSSIM for measurement"
+sudo apt-get install -y libpng12-0
+# sudo apt-add-repository -y ppa:lkwg82/dssim
+# sudo apt-get update
+# sudo apt-get install -y dssim
+
+cd /home/vagrant
+wget https://github.com/pornel/dssim/archive/1.1.1.tar.gz
+tar -xzf 1.1.1.tar.gz
+rm 1.1.1.tar.gz
+cd dssim-1.1.1
+make
+mkdir -p /home/vagrant/bin
+cp ./bin/dssim /home/vagrant/bin
+chmod +x /home/vagrant/bin/dssim
+source ~/.profile
 
 # https://pornel.net/dssim
 # dssim file.png file-modified.png
 # Will output something like 0.2341. 0 means exactly the same image, >0 (unbounded) is amount of difference.
 
-# dssim -o totally-rad-visualisation.png file.png file-modified.png
-
 #depends on jpegoptim, dssim & mozjpeg to be installed
-echo "\n\n>>>>>> install cjpeg-dssim for measurement & optimization\n\n"
-mkdir -p ~/bin
-wget https://raw.githubusercontent.com/technopagan/cjpeg-dssim/master/cjpeg-dssim -P ~/bin
-chmod +x ~/bin/cjpeg-dssim
+echo ">>>>>> install cjpeg-dssim for measurement & optimization"
+mkdir -p /home/vagrant/bin
+wget https://raw.githubusercontent.com/technopagan/cjpeg-dssim/master/cjpeg-dssim -P /home/vagrant/bin
+chmod +x /home/vagrant/bin/cjpeg-dssim
 source ~/.profile
 
-
-echo "\n\n\n\n>>>>>> ALL DONE\n\n"
+echo ""
+echo ""
+echo ">>>>>> ALL DONE"
