@@ -100,7 +100,7 @@ function define_encoder_toolbelt () {
 	# Define our toolbelt of JPEG compression commands and make them selectable from the CLI
 	case ${JPEG_COMPRESSION_SELECTION} in
 		"jpegoptim") JPEG_COMPRESSION_COMMAND="jpegoptim -q -p -f --max=\${__current_jpeg_quality} --strip-all --all-progressive --stdout \${INPUTFILE}";;
-		"mozjpeg") JPEG_COMPRESSION_COMMAND="mozcjpeg -quality \${__current_jpeg_quality} -dct float \${INPUTFILE}";;
+		"mozjpeg") JPEG_COMPRESSION_COMMAND="mozcjpeg -quality \${__current_jpeg_quality} -dct float -tune-ssim \${INPUTFILE}";;
 	   *) echo "Supported JPEG compression methods: jpegoptim | mozjpeg"; exit 1;;
 	esac
 }

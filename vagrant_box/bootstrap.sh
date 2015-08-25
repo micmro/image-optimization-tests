@@ -12,6 +12,19 @@ echo ">>>>>> install ImageMagick"
 sudo apt-get install -y ImageMagick
 
 
+echo ">>>>>> install Adobe ICC colour profiles for conversion"
+cd /home/vagrant
+wget ftp://ftp.adobe.com/pub/adobe/iccprofiles/linux/AdobeColorProfiles-end-user.rpm.tar.gz
+tar -xzf AdobeColorProfiles-end-user.rpm.tar.gz
+rm AdobeColorProfiles-end-user.rpm.tar.gz
+sudo apt-get install alien
+sudo alien --to-deb adobe-color-profiles-1.0-1.noarch.rpm
+sudo dpkg -i adobe-color-profiles_1.0-2_all.deb
+#mkdir /usr/share/color/icc
+#/usr/share/color/icc/Adobe ICC Profiles/
+#http://download.adobe.com/pub/adobe/iccprofiles/win/AdobeICCProfiles.zip
+
+
 #http://blarg.co.uk/blog/how-to-install-mozjpeg
 echo ">>>>>> build and install mozjpeg for lossy compression"
 sudo apt-get install -y autoconf automake libtool nasm gcc
@@ -102,8 +115,11 @@ source ~/.profile
 #depends on jpegoptim, dssim & mozjpeg to be installed
 echo ">>>>>> install cjpeg-dssim for measurement & optimization"
 mkdir -p /home/vagrant/bin
-wget https://raw.githubusercontent.com/technopagan/cjpeg-dssim/master/cjpeg-dssim -P /home/vagrant/bin
+#use local modified csjepg-dssim
+# wget https://raw.githubusercontent.com/technopagan/cjpeg-dssim/master/cjpeg-dssim -P /home/vagrant/bin
+# chmod +x /home/vagrant/bin/cjpeg-dssim
 chmod +x /home/vagrant/bin/cjpeg-dssim
+sudo ln -s /vagrant_shared/cjpeg-dssim /home/vagrant/bin/cjpeg-dssim
 source ~/.profile
 
 echo ""
