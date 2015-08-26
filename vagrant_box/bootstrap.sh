@@ -118,7 +118,7 @@ mkdir -p /home/vagrant/bin
 #use local modified csjepg-dssim
 # wget https://raw.githubusercontent.com/technopagan/cjpeg-dssim/master/cjpeg-dssim -P /home/vagrant/bin
 # chmod +x /home/vagrant/bin/cjpeg-dssim
-chmod +x /home/vagrant/bin/cjpeg-dssim
+chmod +x /vagrant_shared/cjpeg-dssim
 sudo ln -s /vagrant_shared/cjpeg-dssim /home/vagrant/bin/cjpeg-dssim
 source ~/.profile
 
