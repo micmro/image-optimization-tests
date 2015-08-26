@@ -12,6 +12,7 @@ fi
 optimBase=${source_img_name}_optim
 diffBase=${source_img_name}_diff
 size_output="\n"
+cvs_output="Task,Size,Reduction (kb),Reduction (%),DSSIM"
 
 echo "\n\n---------------------------------"
 echo "Jpeg optization tests\n\n"
@@ -41,6 +42,7 @@ originalFileSize=`du -k "${source_img_file}" | cut -f1`
 convert ${source_img_file} ${source_img_name}.png
 
 printFileSize () {
+	task_name=$1
 	file_size_kb=`du -k $2 | cut -f1`
 	file_size_diff=$(expr $originalFileSize - $file_size_kb)
 	file_size_diff_perc=$(echo "scale=2;(100 * $file_size_diff / $originalFileSize)" | bc -l)
@@ -51,14 +53,19 @@ printFileSize () {
 		#dssim_output=`dssim ${source_img_name}.png ${2}.png`
 		# print DSSIM of image (with diff img)
 		dssim_output=`dssim -o diff_${2}.png ${source_img_name}.png ${2}.png`
-		
+		dssim_value=`expr substr "${dssim_output}" 1 8`
+
 		# Create Diff of image with imgmagic
 		# compare -compose src ${source_img_name}.png ${2}.png diff_${2}.png
 		rm ${2}.png
-
-		size_output="${size_output}\n$1\t\t${file_size_kb}kb\t(-${file_size_diff}kb\t-${file_size_diff_perc}%\t)\t${dssim_output}"
+		tab="	"
+		# task_name_clean=$(echo $task_name | sed -e "s/	\+/ /g")
+		task_name_clean=$(echo $task_name | sed -e 's/[ \t]*$//')
+		size_output="${size_output}\n${task_name}\t\t${file_size_kb}kb\t(-${file_size_diff}kb\t-${file_size_diff_perc}%\t)\t${dssim_value}"
+		cvs_output="${cvs_output}\n${task_name_clean},${file_size_kb},${file_size_diff},${file_size_diff_perc},${dssim_value}"
+		echo "Done: $task_name"
 	else
-		size_output="$size_output\n$1\t\t${file_size_kb}kb"
+		size_output="$size_output\n${task_name}\t\t${file_size_kb}kb"
 	fi
 }
 
@@ -155,4 +162,5 @@ printFileSize "cjpeg-dssim (mozjpeg)" "${source_img_name}_cjpeg-dssim_mozjpeg.jp
 #######################
 # Output size differences
 echo $size_output
+echo $cvs_output >> output.csv
 
