@@ -29,6 +29,7 @@ colourspace=$(identify -format "%[colorspace]" ${source_img_file})
 #convert file 
 if [ $colourspace = "CMYK" ]; then
 	mv ${source_img_file} ${source_img_name}_nonRGB.jpeg
+	echo "convert CMYK to sRGB"
 	convert ${source_img_name}_nonRGB.jpeg -profile "/usr/share/color/icc/Adobe ICC Profiles/CMYK Profiles/USWebCoatedSWOP.icc" -profile "/usr/share/color/icc/Adobe ICC Profiles/RGB Profiles/sRGB Color Space Profile.icm" ${source_img_file}
 elif [ $colourspace != "rgb" ] && [ $colourspace != "sRGB" ] && [ $colourspace != "Gray" ]; then
 	echo "\n\nError: Unsupported colourspace"
